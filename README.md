@@ -1,5 +1,7 @@
 English Translation is on the way.
 
+[中文版点此](./Tutorial_CN.md)
+
 90%的Gazebo模型教程从类似这样的命令行指令开始：
 
 `gazebo worlds/pioneer2dx.world` ([Gazebo 官方教程](https://classic.gazebosim.org/tutorials))
