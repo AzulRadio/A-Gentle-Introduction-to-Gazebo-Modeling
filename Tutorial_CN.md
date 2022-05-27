@@ -8,11 +8,11 @@
 
 90%的Gazebo模型教程从类似这样的命令行指令开始：
 
-`gazebo worlds/pioneer2dx.world` ([Gazebo 官方教程](https://classic.gazebosim.org/tutorials))
+`gazebo worlds/pioneer2dx.world` <a href="https://classic.gazebosim.org/tutorials" target="_blank"> Gazebo 官方教程 </a>
 
 或是类似这样的：
 
-`roslaunch my_simulations my_world.launch` ([Construct 的 《五分钟Gazebo》 系列教程](https://www.theconstructsim.com/category/gazebo-tutorials/))
+`roslaunch my_simulations my_world.launch` <a href="https://www.theconstructsim.com/category/gazebo-tutorials/" target="_blank"> Construct 的 《五分钟Gazebo》 系列教程 </a>
 
 上面这些命令是将一些现成的模型文件刷进Gazebo，作为新手的导入并无不妥，但是所有这些教程都没有回答一个至关重要的问题：**模型要从哪里来**。
 
@@ -67,11 +67,11 @@ Gazebo 需要的另一种模型描述了被连接的部件的形状，被称为�
 ```
 这里就将在 `my_ros_package` ROS 包目录下（使用绝对路径也是可以的）的 `box.dae` 嵌入了某个 link 的 visual 部分，这样显示时这个 link 就会显示为 `box.dae` 的样子。
 
->*！如果在此处使用相对路径，可能会触发一个模型隐形的 bug，详见 <a href="#bug">常见_BUG_修复</a>*.
+>*！如果在此处使用相对路径，可能会触发一个模型隐形的 bug，详见 <a href="#bug" target="_blank">常见_BUG_修复</a>*.
 
 <br>
 
-所有的材质与贴图，也都推荐借助 Mesh file 来实现，详见 [如何制作有贴图的 URDF texture 纹理 和 material 材质](#如何制作有贴图的-URDF-texture-纹理-和-material-材质)。
+所有的材质与贴图，也都推荐借助 Mesh file 来实现，详见 <a href="#texture" target="_blank">如何制作有贴图的 URDF texture 纹理 和 material 材质</a>
 
 #### 如何将 URDF 导入 Gazebo
 将 URDF 导入 Gazebo 主要有两种方法：
@@ -90,7 +90,7 @@ rosrun gazebo_ros spawn_model -urdf -file <directory_to_your_URDF_file> -model <
 - 如果目标文件是 sdf，则将 `-urdf` 换成 `-sdf`
 - 可以在末尾添加 `-x 0.0 -y 0.0 -z 0.0` 来控制导入Gazebo时的初始坐标
 
->*！此时极易发生模型隐形bug，见[常见 BUG 修复](#常见-BUG-修复)*
+>*！此时极易发生模型隐形bug，见<a href="#bug" target="_blank">常见_BUG_修复</a>*
 
 第二种方法在各种 Gazebo 教程中较为流行：将模型的导入编成 roslaunch 文件，然后使用 `roslaunch` 命令导入。
 
@@ -104,14 +104,14 @@ rosrun gazebo_ros spawn_model -urdf -file <directory_to_your_URDF_file> -model <
 </launch>
 ```
 *其中 \<name_of_the_model\> 是你希望该 URDF 模型在 Gazebo 中显示的名称，可以随意填写，一般与模型名称一致*
->*！这里file后的路径也可以换成相对路径，但是如果这样做，也极易发生模型隐形bug，见[常见 BUG 修复](#常见-BUG-修复)*
+>*！这里file后的路径也可以换成相对路径，但是如果这样做，也极易发生模型隐形bug，见<a href="#bug" target="_blank">常见_BUG_修复</a>*
 
 #### 如何制作简单的 URDF
 
-手写 URDF 的一般方法是复制一个别人的 URDF，然后进行一些手动的删改。如何手写一个简单的 URDF, 我认为学习 [ROS URDF 官方教程](http://wiki.ros.org/urdf/Tutorials) 中的 *2. Learning URDF Step by Step* 即可。可以只学习下列三个小节：
-- 2.1 [Building a Visual Robot Model with URDF from Scratch](http://wiki.ros.org/urdf/Tutorials/Building%20a%20Visual%20Robot%20Model%20with%20URDF%20from%20Scratch)
-- 2.2 [Building a Movable Robot Model with URDF](http://wiki.ros.org/urdf/Tutorials/Building%20a%20Movable%20Robot%20Model%20with%20URDF)
-- 2.3 [Adding Physical and Collision Properties to a URDF Model](http://wiki.ros.org/urdf/Tutorials/Adding%20Physical%20and%20Collision%20Properties%20to%20a%20URDF%20Model)
+手写 URDF 的一般方法是复制一个别人的 URDF，然后进行一些手动的删改。如何手写一个简单的 URDF, 我认为学习 <a href="http://wiki.ros.org/urdf/Tutorials" target="_blank"> ROS URDF 官方教程 </a> 中的 *2. Learning URDF Step by Step* 即可。可以只学习下列三个小节：
+- 2.1 <a href="http://wiki.ros.org/urdf/Tutorials/Building%20a%20Visual%20Robot%20Model%20with%20URDF%20from%20Scratch" target="_blank"> Building a Visual Robot Model with URDF from Scratch </a>
+- 2.2 <a href="http://wiki.ros.org/urdf/Tutorials/Building%20a%20Movable%20Robot%20Model%20with%20URDF" target="_blank"> Building a Movable Robot Model with URDF </a>
+- 2.3 <a href="http://wiki.ros.org/urdf/Tutorials/Adding%20Physical%20and%20Collision%20Properties%20to%20a%20URDF%20Model" target="_blank"> Adding Physical and Collision Properties to a URDF Model </a>
 
 
 一个常见的 URDF 模型由下列几个标签组成（除了\<robot>）:
@@ -200,13 +200,13 @@ URDF 自带的传感器可以使用 sensor 标签来定义，比如单目摄像�
 
 主流的 CAD 软件不少都有第三方的 URDF 导出插件：
 
-Solidworks 的插件是 [sw_urdf_exporter](http://wiki.ros.org/sw_urdf_exporter), 可以在这里访问他们的 github 来下载对应 SW 版本的插件: https://github.com/ros/solidworks_urdf_exporter。
+Solidworks 的插件是 <a href="http://wiki.ros.org/sw_urdf_exporter" target="_blank"> sw_urdf_exporter </a>, 可以在这里访问他们的 github 来下载对应 SW 版本的插件: https://github.com/ros/solidworks_urdf_exporter。
 
 sw_urdf_exporter 的教程：http://wiki.ros.org/sw_urdf_exporter/Tutorials
 
-我比较常用的是 Blender 的插件 [phobos](https://github.com/dfki-ric/phobos)。
+我比较常用的是 Blender 的插件 <a href="https://github.com/dfki-ric/phobos" target="_blank"> phobos </a>
 
-[Blender](https://www.blender.org/) 是一个免费开源的 3D 建模软件，大小只有不到 400MB，却功能齐全，且有非常强大的社区第三方插件支持，因此也是我最喜欢的 3D 建模软件（开源万岁）。因为不是所有的你不想购买付费的建模软件，又不希望使用盗版，可以考虑使用它。我们接下来的教程都将以 Blender 为例。
+<a href="https://www.blender.org/" target="_blank"> Blender </a> 是一个免费开源的 3D 建模软件，大小只有不到 400MB，却功能齐全，且有非常强大的社区第三方插件支持，因此也是我最喜欢的 3D 建模软件（开源万岁）。因为不是所有的你不想购买付费的建模软件，又不希望使用盗版，可以考虑使用它。我们接下来的教程都将以 Blender 为例。
 
 由于 Blender 于 2021 年 12 月发行了新的大版本更新 3.0，告别了使用了十余年的 2 字头版本，phobos 截至目前 (2022.5) 只保证能在 2.8 与 2.9 上稳定运行，建议同时安装 Blender 的 2.93 LTS 与 最新版本。（我同时安装了 2.79b 与 3.0.0）
 
@@ -214,7 +214,7 @@ Phobos 的教程见此处：https://github.com/dfki-ric/phobos/wiki
 
 不过这个教程写得过于繁杂，下面是我自己写的教程 (使用Blender 2.79b 与 Phobos 1.0.1)
 
-[跳到下一章]()
+跳到下一章：<a href="#mesh" target="_blank">如何制作更精细的 URDF (mesh 网格文件)</a>
 
 首先依照 Phobos 的指南在 Blender 中安装插件。每一次启动Blender时，要使用 Phobos, 都需要先在 User Preference 中启动 Phobos 插件 (新版本的 User Preference 被移动到了 Edit 分栏下)
 
@@ -227,7 +227,7 @@ Phobos 的教程见此处：https://github.com/dfki-ric/phobos/wiki
 
 首先在 Blender 中建/导入一个你想做成 URDF 的模型。
 
-在这一章我们只使用 URDF 中自带的形状（长方体，球体，和圆柱体）来构建我们的 URDF。对于在 URDF 中使用更复杂的模型，可以参考下一章 [如何制作更精细的 URDF (mesh 网格文件)]()，如果希望在 URDF 中使用贴图，可以参考下下一章[如何制作有贴图的 URDF (texture 纹理 和 material 材质)]()。
+在这一章我们只使用 URDF 中自带的形状（长方体，球体，和圆柱体）来构建我们的 URDF。对于在 URDF 中使用更复杂的模型，可以参考下一章 <a href="#mesh" target="_blank">如何制作更精细的 URDF (mesh 网格文件)</a>，如果希望在 URDF 中使用贴图，可以参考下下一章 <a href="#texture" target="_blank">如何制作有贴图的 URDF (texture 纹理 和 material 材质)</a>。
 
 ![](resource/4_make_simple_model.png)
 
@@ -313,12 +313,12 @@ Phobos 的教程见此处：https://github.com/dfki-ric/phobos/wiki
 
 依照第二章所述，将 URDF 刷进 Gazebo.
 
-> 如果遇到 BUG, 记得参考文后的常见问题解决方案
+> 如果遇到 BUG, 记得参考文后的<a href="#bug" target="_blank">常见_BUG_修复</a>
 
 ![](resource/23_gazebo.png)
 
 
-#### 如何制作更精细的 URDF (mesh 网格文件)
+#### <a id="mesh">如何制作更精细的 URDF (mesh 网格文件)</a>
 
 >**首先你需要分清你需要的是更精细的模型还是贴图！**<br>
 如果你需要：<br>
@@ -326,7 +326,7 @@ Phobos 的教程见此处：https://github.com/dfki-ric/phobos/wiki
 AprilTag<br>
 之类只需要让视觉模块 / 人类能在仿真中认出的模型，请一定一定先考虑贴图 (texture).<br>
 如果在应该用贴图的地方错误地使用了精度更高的模型, 会**大大地降低性能和视觉模块在仿真中的准确度**，并浪费大量建模的时间和精力<br>
-如果你需要的是贴图，请参见下一章
+如果你需要的是贴图，请参见下一章<a href="#texture" target="_blank">如何制作有贴图的 URDF texture 纹理 和 material 材质</a>
 
 使用 Phobos `Define Geometry` 时，将类型选择为 `mesh`，导出的 URDF 即可链接到一个网格文件 mesh file.
 
@@ -352,11 +352,11 @@ AprilTag<br>
 
 最后按第二章所属导入 Gazebo.
 
->*！Phobos 生成的 URDF 引用 Mesh 使用的是相对路径，使用方法不对极有可能触发模型隐形的 bug，详见 [常见 BUG 修复](#常见_BUG_修复)*.
+>*！Phobos 生成的 URDF 引用 Mesh 使用的是相对路径，使用方法不对极有可能触发模型隐形的 bug，详见 <a href="#bug" target="_blank">常见_BUG_修复</a>*.
 
 ![](resource/mesh_tutorial/4_gazebo.png)
 
-#### 如何制作有贴图的 URDF (texture 纹理 和 material 材质)
+#### <a id="texture">如何制作有贴图的 URDF (texture 纹理 和 material 材质)</a>
 
 这一章我们将如何使用 Blender 导出有贴图的 Mesh file. 贴图是 Blender 中相对庞大的一个分支，有时很难找到需要的那一个教学。在此将 Blender 填加贴图的常用方法简单总结，以一个立方体上贴 AprilTag 为例。
 
