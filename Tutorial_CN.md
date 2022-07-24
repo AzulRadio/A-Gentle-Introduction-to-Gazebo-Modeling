@@ -2,9 +2,9 @@
 
 写于 2022 年 5 月
 
-注：该教程为 Gazebo Classic 的教程，新版本的 Gazebo (原名 Ignition) 只有部分参考价值
+注：该教程为 Gazebo Classic 的教程，可能并不适用新版本的 Gazebo (原名 Ignition)
 
-## Part I 前言
+## Part I 为什么要再写一篇Gazebo教程
 
 90%的Gazebo模型教程从类似这样的命令行指令开始：
 
@@ -24,7 +24,7 @@
 - 死线逐渐逼近，你需要一个仿真演示来交差，但是你找不到现成的 URDF
 - 你已经有了一个别人做的 URDF/XACRO ，但是不知道怎么修改它
 
-本文所涵盖的内容如下：
+目录：
 - Gazebo 需要什么格式的模型
 - 如何将 URDF 导入 Gazebo
 - 如何制作简单的 URDF
@@ -40,19 +40,23 @@
 
 #### Gazebo 需要什么格式的模型
 
-Gazebo 需要两种模型: 描述文件 (description file) 和网格文件 (mesh file)
+Gazebo 同时需要两种模型来描述一个物体/机器人: 描述文件 (description file) 和网格文件 (mesh file)
 
-第一种描述了机器人各个部件之间的连接关系，被称为描述文件 (description file)。这是一类 Gazebo 专用的文件，常见的格式有：<br>
+> 熟悉 Gazebo 的人会指出这句话并不准确，但是为了方便初学者理解，我们先舍弃一部分准确性。
+
+描述文件 (description file) 描述了机器人各个部件之间的连接关系 (如果你学过机器人学，也可以说这个文件描述了机器人的所有的 Link 和 Joint)。这是一类 Gazebo / ROS 专用的文件，常见的格式有：<br>
 
 **URDF**： 你会需要经常手写/手改这种文件<br>
-**SDF**： 你不需要对它有任何了解，注意 `.world` 格式内的模型也是用这种格式进行描述的<br>
+**SDF**： 对于 Gazebo Classic，你不需要对它有任何了解，注意 `.world` 格式内的模型也是用这种格式进行描述的<br>
 **XACRO**： URDF，但是可以内嵌代码让描述文件更加精简、可读。<br>
-**.world**：许多个模型的描述文件用 SDF 格式打包成一个描述文件。*没有人手写这种格式，大家都是在布置完场景之后 Gazebo -> File -> Save World，这样直接导入 world 就不需要重新布置一遍。* <br>
-**.gazebo**: 有时候你会看见以 `.gazebo` 结尾的文件，这些文件本质也是 URDF ，它们中的内容其实可以写在 URDF 文件中，但是为了让文件结构更加清晰而被单独分出来。全部视为 URDF 就好。
+**.world**：许多个模型的描述文件用 SDF 格式打包成一个描述文件。*没有人手写这种格式，大家都是在布置完场景之后 File -> Save World，这样直接导入 world 就不需要重新布置一遍。* <br>
+**.gazebo**: 有时候你会看见以 `.gazebo` 结尾的文件，这些文件本质也是 URDF ，它们中的内容其实也可以写在同一个 URDF 文件中，但是为了让文件结构更加清晰，他们被单独分出来。处理时全部视为 URDF 即可。
 <br>
 <br>
 <br>
-Gazebo 需要的另一种模型描述了被连接的部件的形状，被称为网格文件 (Mesh file).由于我们之前提到的 description file 也具有基本的描述形状的功能，Mesh file并不是必要的。Mesh file 其实就是一般的 3D 建模软件的文件。 Gazebo 接受 **DAE，STL，OBJ** 三种格式，这些格式可以被绝大多数市面上常用的 3D 建模软件 (Solidworks, Blender, 等等) 导入和导出。
+描述文件描述了机器人各个部件之间的连接关系，Gazebo 需要的另一种模型文件，**网格文件（mesh file）**，则描述了被连接的各个部件长什么样。我们上文提到的描述文件也可以用基本的几何体描述形状，所以在个别情况下，mesh file 并不是必要的。Mesh file 其实就是一般的 3D 建模软件绘制的文件。Gazebo 接受 **DAE，STL，OBJ** 三种格式，这些格式可以被绝大多数 3D 建模软件 (Solidworks, Blender, 等等) 导入和导出。
+
+**二者的结合：**
 
 使用 Mesh file 时，将 Mesh file 文件的路径嵌入 description file，例如：
 ```
@@ -65,18 +69,18 @@ Gazebo 需要的另一种模型描述了被连接的部件的形状，被称为�
 </visual>
 ...URDF 的其他部分...
 ```
-这里就将在 `my_ros_package` ROS 包目录下（使用绝对路径也是可以的）的 `box.dae` 嵌入了某个 link 的 visual 部分，这样显示时这个 link 就会显示为 `box.dae` 的样子。
+这里就将在 `my_ros_package` ROS 包目录下的 `box.dae` 嵌入了某个 link 的 visual 部分，在 Gazebo 中显示时，这个 link 就会显示为 `box.dae` 的样子。
 
->*！如果在此处使用相对路径，可能会触发一个模型隐形的 bug，详见 <a href="#bug" target="_blank">常见_BUG_修复</a>*.
+>*！如果在此处使用相对路径，如 `../meshes/dae/box.dae`可能会触发一个模型隐形的 bug，详见 <a href="#bug" target="_blank">常见_BUG_修复</a>*.
 
 <br>
 
-所有的材质与贴图，也都推荐借助 Mesh file 来实现，详见 <a href="#texture" target="_blank">如何制作有贴图的 URDF texture 纹理 和 material 材质</a>
+所有在 Gazebo 中显示的的材质与贴图，也都一般使用 Mesh file 来实现，详见 <a href="#texture" target="_blank">如何制作有贴图的 URDF texture 纹理 和 material 材质</a>
 
 #### 如何将 URDF 导入 Gazebo
 将 URDF 导入 Gazebo 主要有两种方法：
 
-我们首先介绍相对便于 debug 的一种导入方法：命令行
+我们首先介绍相对便于 debug 的**第一种导入方法：命令行**
 
 在第一个 terminal 中：
 ```
@@ -86,13 +90,14 @@ rosrun gazebo_ros gazebo
 ```
 rosrun gazebo_ros spawn_model -urdf -file <directory_to_your_URDF_file> -model <name_of_your_URDF_model>
 ```
+*其中 \<name_of_the_model\> 是你希望该 URDF 模型在 Gazebo 中显示的名称，可以随意填写，一般与模型名称一致*
 
 - 如果目标文件是 sdf，则将 `-urdf` 换成 `-sdf`
 - 可以在末尾添加 `-x 0.0 -y 0.0 -z 0.0` 来控制导入Gazebo时的初始坐标
 
 >*！此时极易发生模型隐形bug，见<a href="#bug" target="_blank">常见_BUG_修复</a>*
 
-第二种方法在各种 Gazebo 教程中较为流行：将模型的导入编成 roslaunch 文件，然后使用 `roslaunch` 命令导入。
+**第二种方法**在各种 Gazebo 教程中较为流行：将模型的导入编成 roslaunch 文件，然后使用 `roslaunch` 命令导入。
 
 一个极简的例子如下：
 ```
@@ -152,7 +157,7 @@ URDF 自带的传感器可以使用 sensor 标签来定义，比如单目摄像�
       <child link="target_link"/>
     </joint>
 ```
-也可以在 world 与 link 之间定义其他类型的 joint 来获得只有一个或几个自由度的模型（但是不推荐这么做，有专门控制运动的 Gazebo plugin）
+所有的 Gazebo 世界都默认有一个名为 "world" 的固定 link. 对于这个 link 的使用方法，我们也可以在 world 与 link 之间定义一系列 joint 来获得只有一个或几个指定的自由度的模型（但是不推荐这么做，下文我们将介绍专门控制运动的 Gazebo plugin）
 
 第二种方法是在 URDF 的 model 标签下定义一个 static 标签
 ```
@@ -184,6 +189,8 @@ URDF 自带的传感器可以使用 sensor 标签来定义，比如单目摄像�
 ```
 **将 URDF 设为不受重力影响的**
 
+根据 Gazebo 版本不同，标签也各不相同。
+
 ```
 <!-- ROS noetic / Gazebo 11 -->
 <gazebo reference="ball_link">
@@ -202,17 +209,17 @@ URDF 自带的传感器可以使用 sensor 标签来定义，比如单目摄像�
 
 Solidworks 的插件是 <a href="http://wiki.ros.org/sw_urdf_exporter" target="_blank"> sw_urdf_exporter </a>, 可以在这里访问他们的 github 来下载对应 SW 版本的插件: https://github.com/ros/solidworks_urdf_exporter。
 
-sw_urdf_exporter 的教程：http://wiki.ros.org/sw_urdf_exporter/Tutorials
+sw_urdf_exporter 的教程：http://wiki.ros.org/sw_urdf_exporter/Tutorials ，这个插件我没有用过，不过听说效果不错。
 
 我比较常用的是 Blender 的插件 <a href="https://github.com/dfki-ric/phobos" target="_blank"> phobos </a>
 
-<a href="https://www.blender.org/" target="_blank"> Blender </a> 是一个免费开源的 3D 建模软件，大小只有不到 400MB，却功能齐全，且有非常强大的社区第三方插件支持，因此也是我最喜欢的 3D 建模软件（开源万岁）。因为不是所有的你不想购买付费的建模软件，又不希望使用盗版，可以考虑使用它。我们接下来的教程都将以 Blender 为例。
+<a href="https://www.blender.org/" target="_blank"> Blender </a> 是一个免费开源的 3D 建模软件，大小只有不到 400MB，却功能齐全，且有非常强大的社区第三方插件支持，因此也是我最喜欢的 3D 建模软件。如果你无力购买付费的建模软件，又不希望使用盗版，可以考虑使用 Blender 。我们接下来的教程将以 Blender 的 phobos 插件为例。
 
 由于 Blender 于 2021 年 12 月发行了新的大版本更新 3.0，告别了使用了十余年的 2 字头版本，phobos 截至目前 (2022.5) 只保证能在 2.8 与 2.9 上稳定运行，建议同时安装 Blender 的 2.93 LTS 与 最新版本。（我同时安装了 2.79b 与 3.0.0）
 
 Phobos 的教程见此处：https://github.com/dfki-ric/phobos/wiki
 
-不过这个教程写得过于繁杂，下面是我自己写的教程 (使用Blender 2.79b 与 Phobos 1.0.1)
+不过这个教程写得过于繁杂，下面是我自己写的教程 (使用Blender 2.79b 与 Phobos 1.0.1，新版本的界面可能有所变化)
 
 跳到下一章：<a href="#mesh" target="_blank">如何制作更精细的 URDF (mesh 网格文件)</a>
 
@@ -237,7 +244,7 @@ Phobos 的教程见此处：https://github.com/dfki-ric/phobos/wiki
 
 ![](resource/5_select_set_visual.png)
 
-选中模型的每一个零件，依次 `Define Geometry` 并将类型设置为对应的类型，如果不是长方体，球体，或圆柱体，则选择 `mesh`
+选中模型的每一个零件，依次 `Define Geometry` 并将类型设置为对应的类型，如果不是长方体，球体，或圆柱体三种之一，则选择 `mesh`
 
 ![](resource/6_select_define_geometry.png)
 
@@ -263,7 +270,7 @@ Phobos 的教程见此处：https://github.com/dfki-ric/phobos/wiki
 
 ![](resource/11_should_look_like_this_1.png)
 
-改一下名便于日后维护。在最后生成的 URDF 中，bone（大字人形）的名字会作为 link 的名字，mesh （倒三角） 的名字会作为 \<visual\> 的名字 （visual 有没有名字都不会导致 URDF 出错，所以一般手写时无需命名）。
+改一下名便于日后维护。在最后生成的 URDF 中，bone（大字人形）的名字会作为 link 的名字，mesh （倒三角） 的名字会作为 \<visual\> 的名字 （visual 有没有名字都不会导致 URDF 报错，所以一般手写时无需命名）。
 
 ![](resource/12_rename.png)
 
@@ -334,6 +341,8 @@ AprilTag<br>
 
 虽然我们可以将这个模型拆成三个叠放的 Cylinder 在 URDF 中表示，但是为了演示在 Gazebo 中使用 Mesh, 我们假装我们必须要一整个导入进去。
 
+**与上一章的区别是这个模型在Gazebo中会被视为一个Link，而上一章会被视为三个连接在一起的Link**
+
 ![](resource/mesh_tutorial/1_build_mesh.png)
 
 其他的步骤和上一章完全一样，除了 `Define Geometry` 时，需要将类型选择为 `mesh`
@@ -350,7 +359,7 @@ AprilTag<br>
 
 ![](resource/mesh_tutorial/3_collision.png)
 
-最后按第二章所属导入 Gazebo.
+最后按第二章所述导入 Gazebo.
 
 >*！Phobos 生成的 URDF 引用 Mesh 使用的是相对路径，使用方法不对极有可能触发模型隐形的 bug，详见 <a href="#bug" target="_blank">常见_BUG_修复</a>*.
 
@@ -382,7 +391,7 @@ AprilTag<br>
 
 在 `Image Texture` 节点中选择你需要的贴图（任意格式的图片基本都可以），然后将 `Image Texture` 的 `Color` 接口连接到 `Principled BSDF` 的 `Base Color` 接口上。
 
-至此，我们选好了要贴的图片，接下来我们开始定义怎么贴。
+**至此，我们选好了要贴的图片，接下来我们开始定义怎么贴。**
 
 ![](resource/texture_tutorial/6.png)
 
@@ -396,11 +405,13 @@ UV Mapping 之后，确认两件事：
 
 在模型一侧，确认左上的选择方法是 `Face Select`, 右上的 `Viewport Shading` 选择的是 `Material Preview` 模式。
 
+> 如果右上角没有，把界面拉宽
+
 ![](resource/texture_tutorial/8.png)
 
 在 UV Editor 一侧，确认左上的 UV 选择方法是 `Face Selection Mode`, 右上的贴图图片选择已经选中了你想要贴的图，你应该会看到图片出现在 UV Editor 里。
 
-点选右侧我们在上一步创建的使用 `Image Texture` 的模型，选中模型的若干个面，点击 `Assign`.
+点选右侧我们在上一步创建的使用 `Image Texture` 的模型，选中模型需要贴图的面，点击 `Assign`.
 
 ![](resource/texture_tutorial/9.png)
 
@@ -408,7 +419,7 @@ UV Mapping 之后，确认两件事：
 
 ![](resource/texture_tutorial/10.png)
 
-选中模型的若干个面，`Assign` 默认的材质 (Material)，这样就可以得到只贴了一部分面的模型。
+选中模型不需要贴图的面，`Assign` 默认的材质 (Material)，这样就可以得到只贴了一部分面的模型。
 
 ![](resource/texture_tutorial/11.png)
 
@@ -450,6 +461,8 @@ STL（混乱邪恶） - STL 完全不支持贴图，从根本上解决了问题�
 
 ![](resource/texture_tutorial/16.png)
 
+即可。
+
 #### 如何控制 URDF 在 Gazebo 中的速度和位置 (Gazebo Plugin)
 
 要控制一个在 Gazebo 中的URDF，我们需要使用 Gazebo Plugin，我们用一个球来举例：
@@ -474,7 +487,7 @@ STL（混乱邪恶） - STL 完全不支持贴图，从根本上解决了问题�
 </robot>
 ```
 
-定义在 `<plugin>` 标签中的就是 Gazebo Plugin 了。Gazebo 自带了许多插件，这里是官方的教程： https://classic.gazebosim.org/tutorials?tut=ros_gzplugins 写的已经非常详细了，因此我们只拿（我个人最常用的） planar move 插件进行举例。
+定义在 `<plugin>` 标签中的就是 Gazebo Plugin 了。Gazebo 自带了许多插件，这里是官方的教程： https://classic.gazebosim.org/tutorials?tut=ros_gzplugins 我认为写得非常详细了，因此我们只拿（我个人最常用的） planar move 插件进行举例。
 
 将球刷进 Gazebo 中，使用
 ```
@@ -499,11 +512,11 @@ angular:
   z: 0.0"
 ```
 
-如果希望使用代码进行控制，简单包装即可
+如果希望使用代码进行控制，使用 roscpp 或者 rospy 简单包装即可
 
-需要注意：施加速度的坐标系是模型的坐标系，在球体上使用这个插件的时候，球会因为和地面的摩擦而滚动，模型坐标系的指向可能会发生变化，会让球以奇怪的方式运动。在 Gazebo 中切换到移动模型模式并点击模型即可查看其模型坐标系的指向。
+需要注意：施加速度的坐标系是模型的坐标系，在球体上使用这个插件的时候，球可能会因为和地面的摩擦而滚动，导致模型局部坐标系的指向发生变化，使球以奇怪的方式运动。要确定是否是这个 bug, 可以在 Gazebo 中切换到移动模型模式并点击模型，即可查看其模型局部坐标系的指向。
 
-我个人的解决方案是禁用球的重力并将球刷新在空中。
+对于这个bug, 我个人的解决方案是禁用球的重力并将球刷新在空中。
 
 **控制模型的位置，需要使用 Gazebo 提供的 rosservice `/gazebo/set_model_state` 这个 service 就是真正无视物理法则的位移了。**
 
@@ -514,10 +527,10 @@ angular:
 ```
 <transmission name="tran1">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="turret_yaw_joint">
+  <joint name="yaw_joint">
     <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
   </joint>
-  <actuator name="turret_yaw_motor">
+  <actuator name="yaw_motor">
     <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
@@ -529,19 +542,23 @@ angular:
 `hardware_interface/PositionJointInterface`<br>
 `hardware_interface/EffortJointInterface`
 
-**如果你确定你的模型不需要推/拉/抓举任何东西，选择 `PositionJointInterface`, 这可以让你省去调 PID 的步骤。**
+**如何确定自己需要哪一种 hardwareInterface:**
 
-**反之，如果你的模型需要与任何物体进行力的交互（单纯地在地面上推、拉不算），则一定要选择 `EffortJointInterface`, 否则你的模型在仿真中将无法提供任何的力。**
+如果你确定你的模型不需要推/拉/抓举任何东西，选择 `PositionJointInterface`, 这可以让你省去调 PID 的步骤。
 
->如果在 spawn_model 时提示没有某个 hardwareInterface，这些 hardwareInterface 是可以用和所有 ROS package 一样的方法安装的。
+反之，如果你的模型需要与任何物体进行力的交互（单纯地在地面上推、拉不算），则一定要选择 `EffortJointInterface`, 否则你的模型在仿真中将无法提供任何的力。
 
-完成上述定义 `<transmission>` 的定义之后，参考官方教程，使用 Moveit 的
+>如果在 spawn_model 时提示没有某个 hardwareInterface：这些 hardwareInterface 是可以用和所有 ROS package 一样的方法（apt install）安装的。
+
+完成上述定义 `<transmission>` 的定义之后，可以使用 Moveit 的设置助手来配置机器人的运动控制
+
+这一步可以参考 Moveit 的官方教程： https://ros-planning.github.io/moveit_tutorials/doc/setup_assistant/setup_assistant_tutorial.html
+
+打开配置助手的命令是：
 
 ```
 roslaunch moveit_setup_assistant setup_assistant.launch
 ```
-
-来进行模型的设置。可以参考 Moveit 的官方教程： https://ros-planning.github.io/moveit_tutorials/doc/setup_assistant/setup_assistant_tutorial.html
 
 设置完成后，使用
 
@@ -551,7 +568,7 @@ roslaunch <你导出的文件夹> demo_gazebo.launch
 即可开始控制。
 
 Moveit 也提供了
-https://ros-planning.github.io/moveit_tutorials/doc/gazebo_simulation/gazebo_simulation.html 这个教程来帮助用户学习 Gazebo 和 Moveit 相结合，如果上面的直接运行有问题，可以看这一章。
+https://ros-planning.github.io/moveit_tutorials/doc/gazebo_simulation/gazebo_simulation.html 这个教程来帮助用户学习 Gazebo 和 Moveit 的结合使用，如果直接运行 `demo_gazebo.launch` 失败，可以借助这个教程来debug。
 
 要使用 Python / CPP 代码进行控制，可以参考 Moveit 的另一个官方教程：https://ros-planning.github.io/moveit_tutorials/doc/move_group_python_interface/move_group_python_interface_tutorial.html
 
@@ -571,7 +588,7 @@ https://classic.gazebosim.org/tutorials?tut=ros_gzplugins
 #### <a id="bug">常见 BUG 修复</a>
 
 ###### 1. process has died
-Gazebo 不允许多开，所以有时候会莫名其妙地报这个错：
+Gazebo 不允许被同时打开多次，电脑上所有的用户同时只能打开一个 Gazebo，所以有时候会莫名其妙地报这个错：
 
 ```
 [gazebo-1] process has died [pid xxxxx, exit code 255
@@ -586,21 +603,23 @@ killall gzserver
 
 ###### 2. 模型隐形
 
-首先可以启动显示碰撞来确定模型是没有刷进来还是模型隐形。
+首先可以启动显示碰撞来确定模型是没有刷进来还是模型隐形:
 
-![](resource/collision.png)
+![](resource/bug/collision.png)
 
-如果只能看见模型的碰撞箱，不能看见模型的 mesh，则是模型隐形，有两种可能的解决方法。
+如果只能看见模型的碰撞箱，不能看见模型的 mesh，则是模型隐形，若模型没有刷进来，查看启动 Gazebo 的终端会显示相关报错，我们这里只讨论较难 debug 的模型隐形 bug。
 
-**第一，如果在 URDF 中 mesh 文件使用的是相对路径，而非 ROS 包的名字：注意，这个相对路径是以启动 `rosrun gazebo_ros gazebo` 的路径作为起点！**
+隐形 bug 一般有两种可能的原因。
 
-比如说<br>
+**第一、如果在 URDF 中 mesh 文件使用的是相对路径，而非 ROS 包的名字：注意，这个相对路径是以启动 `rosrun gazebo_ros gazebo` 的路径作为起点！**
+
+比如说对于如下的文件结构<br>
 /model<br>
-|-/mesh<br>
-|-/urdf<br>
-这样的文件结构，假设有 `/urdf` 中的某 URDF 使用 `../mesh/a.dae` 来表示其 mesh 文件的路径。如果我们在 `/model` 中启动 `rosrun gazebo_ros gazebo`, gazebo 就会在 `/model` 的上一级中寻找 `/mesh/a.dae`，此时就会因找不到模型而隐形。
+|--/mesh<br>
+|--/urdf<br>
+假设有 `/urdf` 目录中的 URDF 在其 `<mesh>` 标签中使用了 `../mesh/a.dae` 来表示其 mesh 文件的路径，如果这时我们又在 `/model` 目录中启动了 `rosrun gazebo_ros gazebo`, Gazebo 就会在 `/model` 的上一级中寻找 `/mesh/a.dae`，此时就会因找不到模型而隐形。
 
-第二，如果使用 phobos 导出的 dae：
+**第二、如果使用 phobos 导出的 dae：**
 
 使用旧版的 Blender 导出的 Dae 可能有几率无法使用
 
@@ -608,4 +627,25 @@ killall gzserver
 
 ###### 3. 别人给的 .world 文件无法使用
 
-找找看里面是不是有 world time stamp，删掉即可。这会导致只有创建者能用该导出的世界。
+检查该文件中是否有 world time stamp 标签并删除即可。该 bug 会导致只有该 world 的创建者能使用这个导出的世界。
+
+
+###### 4. 破损的模型
+
+有时候我们不得不去修理一些破损的，不能被 Gazebo 有效识别的模型，一些简单的方法如下
+
+一种常见的破损是模型有错误位置的法向面 (Normal)。对于3D模型来说，每个面都是有朝向的，如果朝向错误，可能就会导致 Gazebo 报错。我们使用 Blender 进行修理。
+
+首先打开 Face Orientation 的显示，模型每个面的正反会分别用红色和蓝色标记
+
+![](resource/bug/face_dir.png)
+
+可以看到这个模型的一个面（红色的面）的朝向是与其他的面不同的，我们在 `Edit Mode` 中选中这个面后可以如图所示反转这个面的朝向。
+
+![](resource/bug/face_flip.png)
+
+另一中常见的破损是模型不是闭合的，少了一些面：
+
+![](resource/bug/face_missing.png)
+
+选中要补全的面的边线，按 `F` 可以补全这个面，如果面是弯曲的或有很多条边，使用 `Alt + F` 可以用多个三角形补全这个面。
