@@ -1,6 +1,46 @@
-English Translation is on the way.
+# A Gentle Introduction to Gazebo Modeling [En/中]
+
+[English Version click here](./Tutorial_EN.md)
+
+### Why yet another Gazebo tutorial？
+
+90% of Gazebo tutorials start with terminal commands that look like this:
+
+`gazebo worlds/pioneer2dx.world` <a href="https://classic.gazebosim.org/tutorials" target="_blank"> Gazebo Official Tutorial </a>
+
+Or like this:
+
+`roslaunch my_simulations my_world.launch` <a href="https://www.theconstructsim.com/category/gazebo-tutorials/" target="_blank"> Construct's *Gazebo in 5 minutes* series </a>
+
+The commands above spawn some given model into Gazebo and surly is a good starting point for a Gazebo beginner. However, few of these tutorials answer a big question: **how do you get these models in the first place?**
+
+Yes. You can find 3D models from many places from modeling experts. If you are lucky enough, you may even find the URDF (model) file you need. But what if all you need is a simple, example model for a demo? All these tutorials choose to ignore this problem, which is the main reason I write this tutorial: **How to build/edit a Gazebo scene you need.**
+
+This tutorial targets the following readers:
+- Know what is a ROS topic, know how to use `rosrun`, `roslaunch`, and can write a simple `roslaunch` file following examples.
+- Not taking 3D modeling as the ultimate goal. That's said, modeling is only a tool for your bigger goal. (This is not a modeling tutorial !)
+- The deadline is approaching, you need a simulated demo to present, but you can't find the URDF you need.
+- You already found a URDF/XACRO from the others, but have no idea how to edit it.
+
+Index:
+- What formats of model does Gazebo need
+- How to spawn URDF to Gazebo
+- How to create a simple URDF
+- How to set a URDF to immovable / transparent / no collision / no gravity
+- How to generate URDF with a CAD software (Solidworks / Blender)
+- How to make URDF with more details (mesh file)
+- How to make URDF with image texture (texture and material)
+- How to control the speed and position of a URDF in Gazebo (Gazebo Plugin)
+- How to rotate a joint of a URDF in Gazebo (ROS Moveit!)
+- How to make a simulated camera and simulated sensors (Gazebo Plugin)
+
+---
+
+# Gazebo 模型简明教程
 
 [中文版点此](./Tutorial_CN.md)
+
+### 为什么要再写一篇Gazebo教程？
 
 90%的Gazebo模型教程从类似这样的命令行指令开始：
 
