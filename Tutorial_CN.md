@@ -411,7 +411,7 @@ UV Mapping 之后，确认两件事：
 
 在 UV Editor 一侧，确认左上的 UV 选择方法是 `Face Selection Mode`, 右上的贴图图片选择已经选中了你想要贴的图，你应该会看到图片出现在 UV Editor 里。
 
-点选右侧我们在上一步创建的使用 `Image Texture` 的模型，选中模型需要贴图的面，点击 `Assign`.
+点选右侧我们在上一步创建的使用 `Image Texture` 的材质，选中模型需要贴图的面，点击 `Assign`.
 
 ![](resource/texture_tutorial/9.png)
 
@@ -423,9 +423,11 @@ UV Mapping 之后，确认两件事：
 
 ![](resource/texture_tutorial/11.png)
 
-在左侧 UV Editor 里选中一些方框，按 `G` 可以移动，按 `S` 可以放缩，所有快捷键和操作模型的快捷键都是一致的。
+要细化贴图在一个面上的设置，在左侧 UV Editor 里选中这个面对应的线框，按 `G` 可以移动，按 `S` 可以放缩，所有快捷键和操作模型的快捷键都是一致的。
 
 现在可以 `File -> Export` 来导出了。
+
+**DAE STL OBJ 三者的不同**
 
 贴图 (texture) 永远是独立于 mesh file 存在的一张图片，我们在 *Gazebo 需要什么格式的模型* 中讲过，Gazebo 支持三种格式的 mesh file: **DAE，STL，OBJ**, 事实上，每一种格式对贴图的图片文件都有不同的处理方法。
 
@@ -433,7 +435,7 @@ DAE （守序善良） - 导出时会在同一目录下导出贴图文件，dae 
 
 ![](resource/texture_tutorial/dae.png)
 
-OBJ （绝对中立） - 导出时生成 UV 文件（怎么贴） 和 Mesh 文件（没有材质的3D）。直接由Blender 生成的 UV 文件使用绝对路径来引用贴图图片，如果贴图图片的路径改变，则无法加载贴图。可以手动编辑修改为相对路径。
+OBJ （绝对中立） - 导出时生成 UV 文件（怎么贴） 和 Mesh 文件（没有材质的3D）.由Blender 生成的OBJ UV 文件使用绝对路径来引用被Blender打开的原始的那张贴图图片，如果贴图图片的路径改变，则无法加载贴图。可以手动编辑修改为相对路径。
 
 ![](resource/texture_tutorial/obj.png)
 
@@ -445,7 +447,7 @@ STL（混乱邪恶） - STL 完全不支持贴图，从根本上解决了问题�
 
 **额外问题：模型的放缩**
 
-放大模型时已经应用的贴图会跟着被拉伸，但是如果我希望模型不变型呢？
+放大模型时已经应用的贴图会跟着被拉伸，但是如果我希望材质不变型呢？
 
 ![](resource/texture_tutorial/12.png)
 
@@ -457,11 +459,9 @@ STL（混乱邪恶） - STL 完全不支持贴图，从根本上解决了问题�
 
 ![](resource/texture_tutorial/14.png)
 
-即可，如果不希望贴图在未定义的地方重复，可以在 `Shading` 分栏中找到 `Image Texture` 节点调整设置。
-
 ![](resource/texture_tutorial/16.png)
 
-即可。
+即可，如果不希望贴图在未定义的地方重复，可以在 `Shading` 分栏中找到 `Image Texture` 节点调整设置。
 
 #### 如何控制 URDF 在 Gazebo 中的速度和位置 (Gazebo Plugin)
 
@@ -499,7 +499,7 @@ rqt_graph
 
 此时向 `ball/cmd_vel` 发送指令就可以控制球的速度。
 
-使用命令行控制的方法如下，注意输入 topic name 之后所有的内容都可以按 `Tab` 进行自动补全:
+使用命令行控制的方法如下，注意输入 topic name (此处为`/ball/cmd_vel`) 之后所有的内容都可以按 `Tab` 进行自动补全:
 
 ```
 rostopic pub /ball/cmd_vel geometry_msgs/Twist "linear:
@@ -587,7 +587,7 @@ https://classic.gazebosim.org/tutorials?tut=ros_gzplugins
 
 #### <a id="bug">常见 BUG 修复</a>
 
-###### 1. process has died
+###### 1. 启动时 process has died，但是上一次是好的
 Gazebo 不允许被同时打开多次，电脑上所有的用户同时只能打开一个 Gazebo，所以有时候会莫名其妙地报这个错：
 
 ```
